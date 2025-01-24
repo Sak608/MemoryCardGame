@@ -8,8 +8,8 @@ let levels = 2,
     columns = 2,
     rows = 2,
     matched = 0,
-    cardOne,
-    cardTwo,
+    cardOne = null,
+    cardTwo = null,
     IsPreventClick = false;
 
 // Select difficulty level
@@ -69,9 +69,11 @@ function shuffleCards(cards) {
 
 // Flip card logic
 function flipCard(card) {
-    if (IsPreventClick || card === cardOne) return;
+    // Prevent clicking if cards are already being compared or card is already matched
+    if (IsPreventClick || card === cardOne || card.classList.contains("matched")) return;
 
     card.classList.add("flip");
+
     if (!cardOne) {
         cardOne = card;
     } else {
@@ -82,10 +84,13 @@ function flipCard(card) {
         const cardTwoIcon = cardTwo.querySelector(".back i").classList[2];
 
         if (cardOneIcon === cardTwoIcon) {
-            matched++;
+            // Matched cards
+            cardOne.classList.add("matched");
+            cardTwo.classList.add("matched");
             cardOne = null;
             cardTwo = null;
             IsPreventClick = false;
+            matched++;
 
             if (matched === levels) {
                 setTimeout(() => {
@@ -94,16 +99,18 @@ function flipCard(card) {
                 }, 500);
             }
         } else {
+            // Unmatched cards
             setTimeout(() => {
                 cardOne.classList.remove("flip");
                 cardTwo.classList.remove("flip");
                 cardOne = null;
                 cardTwo = null;
                 IsPreventClick = false;
-            }, 1000);
+            }, 1000); // Ensure this is set to 1000 milliseconds (1 second)
         }
     }
 }
+
 
 // Restart game
 faRepeat.addEventListener("click", () => {
