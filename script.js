@@ -1,8 +1,8 @@
 const startGameContainer = document.querySelector(".startGame"),
-startGameCards = document.querySelectorAll(".startGame .card"),
-startGame = document.querySelector(".startGame button"),
-playground = document.querySelector(".playground"),
-faRepeat = document.querySelector(".fa-repeat");
+    startGameCards = document.querySelectorAll(".startGame .card"),
+    startGame = document.querySelector(".startGame button"),
+    playground = document.querySelector(".playground"),
+    faRepeat = document.querySelector(".fa-repeat");
 
 let levels = 2,
     columns = 2,
@@ -10,33 +10,33 @@ let levels = 2,
     matched = 0,
     cardOne,
     cardTwo,
-    IsPreventClick = true;
+    IsPreventClick = false;
 
+// Select difficulty level
 startGameCards.forEach((element) => {
     element.addEventListener("click", (e) => {
         startGameCards.forEach((el) => {
             el.classList.remove("active");
-        })
-
-
+        });
         e.target.parentElement.classList.add("active");
         levels = e.target.parentElement.getAttribute("level");
         columns = e.target.parentElement.getAttribute("column");
         rows = e.target.parentElement.getAttribute("row");
-
-        console.log(levels, columns, rows);
     });
 });
 
-startGame.addEventListener("click", (e) => {
+// Start the game
+startGame.addEventListener("click", () => {
     startGameContainer.style.display = "none";
     playground.style.display = "grid";
     playground.style.gridTemplateColumns = `repeat(${columns}, 100px)`;
     playground.style.gridTemplateRows = `repeat(${rows}, 100px)`;
 
     createCards();
+    faRepeat.style.display = "block";
 });
 
+// Create and shuffle cards
 function createCards() {
     const cardArr = [
         "house",
@@ -48,18 +48,72 @@ function createCards() {
         "person-biking",
         "jet-fighter-up",
     ];
-    shuffleCards([...cardArr, ...cardArr]);
+    const shuffledCards = shuffleCards([...cardArr.slice(0, levels), ...cardArr.slice(0, levels)]);
+    playground.innerHTML = shuffledCards
+        .map(
+            (icon) => `
+            <div class="card" onclick="flipCard(this)">
+                <div class="front"><i class="fa-solid fa-question"></i></div>
+                <div class="back"><i class="fa-solid fa-${icon}"></i></div>
+            </div>
+        `
+        )
+        .join("");
+    IsPreventClick = false;
 }
 
+// Shuffle cards
 function shuffleCards(cards) {
-    playground.innerHTML = "";
+    return cards.sort(() => Math.random() - 0.5);
+}
 
-    for(let i = 0; i< cards.length; i++) {
-        playground.innerHTML += `
-        <div class = "card">
-            <div class="front"><i class="fa-solid fa-question"></i></div>
-            <div class="back"><i class="fa-solid fa-${cards[i]}"></i></div>
-        </div>
-        `
+// Flip card logic
+function flipCard(card) {
+    if (IsPreventClick || card === cardOne) return;
+
+    card.classList.add("flip");
+    if (!cardOne) {
+        cardOne = card;
+    } else {
+        cardTwo = card;
+        IsPreventClick = true;
+
+        const cardOneIcon = cardOne.querySelector(".back i").classList[2];
+        const cardTwoIcon = cardTwo.querySelector(".back i").classList[2];
+
+        if (cardOneIcon === cardTwoIcon) {
+            matched++;
+            cardOne = null;
+            cardTwo = null;
+            IsPreventClick = false;
+
+            if (matched === levels) {
+                setTimeout(() => {
+                    alert("You won!");
+                    faRepeat.click();
+                }, 500);
+            }
+        } else {
+            setTimeout(() => {
+                cardOne.classList.remove("flip");
+                cardTwo.classList.remove("flip");
+                cardOne = null;
+                cardTwo = null;
+                IsPreventClick = false;
+            }, 1000);
+        }
     }
 }
+
+// Restart game
+faRepeat.addEventListener("click", () => {
+    startGameContainer.style.display = "grid";
+    playground.style.display = "none";
+    faRepeat.style.display = "none";
+
+    matched = 0;
+    cardOne = null;
+    cardTwo = null;
+    IsPreventClick = false;
+    playground.innerHTML = "";
+});
