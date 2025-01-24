@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    margin: 0px;
+    padding: 0px;
+    font-family: "Poppins";
+    box-sizing: border-box;
+}
+
+body{
+    background-color: darksalmon;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.container{
+    background-color: antiquewhite;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 14px 14px 0 0 #000000;
+    margin-top: 10px;
+}
+
+.startGame{
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(1, 100px);
+}
+
+.startGame .card {
+    font-size: 1.2rem;
+    user-select: none;
+}
+
+.card{
+    text-align: center;
+    cursor: pointer;
+    font-size: 2rem;
+}
+
+.card div{
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    color:cornflowerblue;
+    font-weight: bold;
+    background: #fff;
+    border-radius: 10px;
+    transition: all 500ms ease-out;
+    backface-visibility: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+}
+
+.startGame button{
+    cursor: pointer;
+    height: 40px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    background-color: cornflowerblue;
+}
+ 
+.startGame .card.active div{
+    border: 2px solid cornflowerblue;
+}
+
+.card .back {
+    transform: rotateY(-180deg);
+}
+
+.startGame .card:hover .front{
+    transform: rotateY(180deg);
+}
+
+.startGame .card:hover .back{
+    transform: rotateY(0deg);
+}
+
+.fa-repeat{
+    font-size: 25px;
+    margin-top: 1.5rem;
+    cursor: pointer;
+}
+
+.playground {
+    display: grid;
+    gap: 20px;
+    display: none;
+    grid-template-columns: repeat(3, 100px);
+}
+
